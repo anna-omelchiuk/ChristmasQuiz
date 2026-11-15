@@ -1,0 +1,33 @@
+﻿@model ChristmasQuiz.Models.UserRegistrationModel
+@{
+    ViewData["Title"] = "Реєстрація";
+}
+
+<div class="quiz-card">
+    <div class="welcome-banner">
+        <h2>Вітаємо вас на нашій різдвяній вікторині!</h2>
+        <p>Заповніть реєстраційні дані, щоб розпочати гру.</p>
+    </div>
+
+    <form asp-action="Index" asp-controller="Quiz" method="post" class="christmas-form">
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-input" placeholder="Ваше ім'я" />
+            <span asp-validation-for="Name" class="validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Age"></label>
+            <input asp-for="Age" type="number" class="form-input" placeholder="Ваш вік" />
+            <span asp-validation-for="Age" class="validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-input" placeholder="user@gmail.com" />
+            <span asp-validation-for="Email" class="validation-error"></span>
+        </div>
+
+        <button type="submit" class="btn-primary">Розпочати вікторину</button>
+    </form>
+</div>

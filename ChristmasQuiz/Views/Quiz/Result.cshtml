@@ -1,0 +1,84 @@
+﻿@model ChristmasQuiz.Models.QuizSessionData
+@{
+    ViewData["Title"] = "Результати вікторини";
+    int correct = Model.Answers.Count(a => a.IsCorrect);
+    int wrong = Model.Answers.Count - correct;
+    int total = Model.Answers.Count;
+    double percent = total > 0 ? Math.Round((double)correct / total * 100, 1) : 0;
+}
+
+<div class="quiz-card">
+    <div class="result-header">
+        <h2>Вітаємо, @Model.User.Name! Вікторину завершено!</h2>
+        <p class="user-meta">Пошта: @Model.User.Email</p>
+    </div>
+
+    <div class="mail-notification @(Model.EmailSent ? "mail-success" : "mail-info")">
+        <div>
+            <strong>Статус відправки на пошту:</strong>
+            <p>@Model.EmailStatusMessage</p>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-box stat-total">
+            <span class="stat-number">@total</span>
+            <span class="stat-label">Всього</span>
+        </div>
+        <div class="stat-box stat-correct">
+            <span class="stat-number">@correct</span>
+            <span class="stat-label">Правильних</span>
+        </div>
+        <div class="stat-box stat-wrong">
+            <span class="stat-number">@wrong</span>
+            <span class="stat-label">Хибних</span>
+        </div>
+        <div class="stat-box stat-percent">
+            <span class="stat-number">@percent%</span>
+            <span class="stat-label">Успіх</span>
+        </div>
+    </div>
+
+    <h3 class="details-heading">Детальний розбір відповідей:</h3>
+
+    <div class="results-breakdown">
+        @for (int i = 0; i < Model.Answers.Count; i++)
+        {
+            var record = Model.Answers[i];
+            string cardClass = record.IsCorrect ? "result-card correct-border" : "result-card wrong-border";
+
+            <div class="@cardClass">
+                <div class="question-header"><strong>Питання @(i + 1):</strong> @record.Question.Text</div>
+                <ul class="options-review">
+                    @for (int j = 0; j < record.Question.Options.Count; j++)
+                    {
+                        bool isUserChoice = (j == record.SelectedOptionIndex);
+                        bool isRightAnswer = (j == record.Question.CorrectOptionIndex);
+                        string itemClass = "option-review-item";
+                        string badge = "";
+
+                        if (isRightAnswer)
+                        {
+                            itemClass += " answer-correct";
+                            badge = " (Правильна відповідь)";
+                        }
+                        else if (isUserChoice && !isRightAnswer)
+                        {
+                            itemClass += " answer-wrong";
+                            badge = " (Ваша відповідь)";
+                        }
+
+                        <li class="@itemClass">
+                            <span>@record.Question.Options[j]</span>
+                            <span>@badge</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+
+    <div class="form-actions center">
+        <a asp-action="Index" asp-controller="Quiz" class="btn-secondary">Пройти вікторину знову</a>
+    </div>
+</div>
